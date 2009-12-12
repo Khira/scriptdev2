@@ -98,22 +98,15 @@ struct MANGOS_DLL_DECL npc_guild_guard_ai : public npc_guild_guard_base_ai
         Reset();
     }
 
-    uint32 Death_Timer;
-    uint32 DeathAll_Timer;
-    bool   IsPhaseTwo;
 
 
     void Reset(void)
     {
-        Death_Timer = 6000;
-        DeathAll_Timer = 3000;
-        IsPhaseTwo = false;
         m_creature->setFaction(35);
     }
 
     void Aggro(Unit *)
     {
-        DoScriptText(MSG_AGGRO, m_creature);
         m_creature->setFaction(14);
     }
 
@@ -122,44 +115,17 @@ struct MANGOS_DLL_DECL npc_guild_guard_ai : public npc_guild_guard_base_ai
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;
 
-        if (!IsPhaseTwo)
-        {
-            if (Death_Timer < Diff)
-            {
-                DoCast(m_creature->getVictim(), SPELL_DEATH);
-                Death_Timer = 5000;
-            } else Death_Timer -= Diff;
-        }
-        else
-        {
-            if (DeathAll_Timer < Diff)
-            {
-                DoScriptText(MSG_DEATHALL, m_creature);
-                DoCast(m_creature->getVictim(), SPELL_DEATHALL);
-                DeathAll_Timer = 5000;
-            } else DeathAll_Timer -= Diff;
-        }
-
-        if ((m_creature->GetHealth() * 100 / m_creature->GetMaxHealth()) < 30 && !IsPhaseTwo)
-        {
-            DoScriptText(MSG_DEATHALL_PREVENT, m_creature);
-            IsPhaseTwo = true;
-        }
-
         DoMeleeAttackIfReady();
     }
 
     void KilledUnit(Unit * pWho)
     {
         npc_guild_guard_base_ai::KilledUnit(pWho);
-
-        if (IsPhaseTwo) return;
-        DoScriptText(MSG_KILL_PLAYER, m_creature, pWho);
     }
 
     void JustDied(Unit*)
     {
-        DoScriptText(MSG_DEATH, m_creature);
+
     }
 };
 
