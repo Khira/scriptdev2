@@ -11,6 +11,7 @@
 #include "ProgressBar.h"
 #include "../system/ScriptLoader.h"
 #include "../system/system.h"
+#include "sd2_projects.h"
 
 int num_sc_scripts;
 Script *m_scripts[MAX_SCRIPTS];
@@ -39,6 +40,7 @@ void LoadDatabase()
         pSystemMgr.LoadScriptTexts();
         pSystemMgr.LoadScriptTextsCustom();
         pSystemMgr.LoadScriptWaypoints();
+		nsSD2P::LoadDatabase();
     }
     else
     {
@@ -108,6 +110,8 @@ void ScriptsInit()
     FillSpellSummary();
 
     AddScripts();
+	
+	nsSD2P::LoadScripts();
 
     outstring_log(">> Loaded %i C++ Scripts.", num_sc_scripts);
 }
